@@ -1,0 +1,23 @@
+{
+  "name": "mythic-chess",
+  "version": "1.0.0",
+  "description": "MYTHIC CHESS - a chess.com-style clone with live matchmaking, elo, and puzzles",
+  "main": "server/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node server/index.js"
+  },
+  "dependencies": {
+    "chess.js": "^1.0.0-beta.8",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.4.0",
+    "jsonwebtoken": "^9.0.2",
+    "socket.io": "^4.7.5",
+    "sqlite3": "^5.1.7"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

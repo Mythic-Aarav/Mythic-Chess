@@ -1,0 +1,17 @@
+{
+  "name": "Mythic Chess",
+  "short_name": "Mythic Chess",
+  "description": "Play live rated chess, solve puzzles, and climb the leaderboard.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#2E5339",
+  "theme_color": "#2E5339",
+  "icons": [
+    {
+      "src": "assets/logo.png",
+      "sizes": "365x373",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

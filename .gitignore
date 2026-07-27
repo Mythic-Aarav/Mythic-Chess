@@ -1,0 +1,6 @@
+node_modules/
+data/chess.db
+data/chess.db-journal
+.env
+.DS_Store
+npm-debug.log*

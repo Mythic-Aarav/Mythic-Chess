@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MYTHIC CHESS — Tournament Hall</title>
+<link rel="icon" type="image/png" href="assets/logo.png" />
+<link rel="apple-touch-icon" href="assets/logo.png" />
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#2E5339" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== TOP BAR ===== -->
+  <header class="topbar">
+    <div class="brand">
+      <img src="assets/logo.png" alt="Mythic Chess logo" class="brand-logo" />
+      <span class="brand-text">MYTHIC <em>CHESS</em></span>
+    </div>
+    <nav class="tabs" id="navTabs">
+      <button class="tab-btn active" data-view="lobby">Hall</button>
+      <button class="tab-btn" data-view="play">Play</button>
+      <button class="tab-btn" data-view="puzzles">Puzzles</button>
+      <button class="tab-btn" data-view="rush">Puzzle Rush</button>
+      <button class="tab-btn" data-view="coach">Coach</button>
+      <button class="tab-btn" data-view="leaderboard">Leaderboard</button>
+    </nav>
+    <div class="account-box" id="accountBox">
+      <button id="installBtn" class="btn-gold install-btn hidden">⬇ Install Now</button>
+      <span id="userInfo" class="user-info hidden"></span>
+      <button id="logoutBtn" class="btn-ghost hidden">Change Name</button>
+    </div>
+  </header>
+
+  <main class="hall">
+
+    <!-- ===== NAME ENTRY VIEW (shown once, first visit only) ===== -->
+    <section id="view-auth" class="view felt-panel">
+      <div class="auth-card">
+        <h1 class="parchment-title">Welcome to the Hall</h1>
+        <p class="subtitle">Tell us what to call you — we'll remember it on this device from now on.</p>
+
+        <form id="nameForm" class="auth-form">
+          <label>Your Name
+            <input type="text" id="nameInput" required minlength="2" maxlength="20" autocomplete="off" placeholder="e.g. Aarav" />
+          </label>
+          <button type="submit" class="btn-gold">Enter the Hall (Elo 0)</button>
+          <p class="form-msg" id="nameMsg"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- ===== LOBBY VIEW ===== -->
+    <section id="view-lobby" class="view hidden">
+      <div class="felt-panel lobby-panel">
+        <h2 class="parchment-title">Welcome to the Hall, <span id="lobbyUsername">Player</span></h2>
+        <p class="subtitle">Your rating: <span id="lobbyElo" class="gold-text">0</span> Elo</p>
+        <div class="lobby-actions">
+          <button class="btn-gold big-btn" id="goPlayBtn">⚔ Find a Live Match</button>
+          <button class="btn-wood big-btn" id="goPuzzleBtn">♟ Solve a Puzzle</button>
+        </div>
+        <div class="stat-row">
+          <div class="stat-card">
+            <span class="stat-num" id="statSolved">0</span>
+            <span class="stat-label">Puzzles Solved</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num" id="statElo">0</span>
+            <span class="stat-label">Current Elo</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num" id="statStreak">1</span>
+            <span class="stat-label">🔥 Day Streak</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PLAY VIEW ===== -->
+    <section id="view-play" class="view hidden">
+      <div class="play-layout">
+
+        <div class="board-column">
+          <div class="player-strip" id="topPlayerStrip">
+            <span class="player-name" id="topPlayerName">Opponent</span>
+          </div>
+          <div class="captured-row" id="topCaptured"></div>
+
+          <div class="board-frame">
+            <div id="chessboard" class="chessboard"></div>
+          </div>
+
+          <div class="captured-row" id="bottomCaptured"></div>
+          <div class="player-strip" id="bottomPlayerStrip">
+            <span class="player-name" id="bottomPlayerName">You</span>
+          </div>
+
+          <div class="board-controls">
+            <button id="findMatchBtn" class="btn-gold">⚔ Find Match</button>
+            <button id="cancelFindBtn" class="btn-ghost hidden">Cancel Search</button>
+            <button id="resignBtn" class="btn-wood hidden">Resign</button>
+            <button id="offerDrawBtn" class="btn-wood hidden">Offer Draw</button>
+            <button id="flipBoardBtn" class="btn-wood">⇅ Flip Board</button>
+            <button id="zoomOutBtn" class="btn-wood">− Zoom</button>
+            <button id="zoomInBtn" class="btn-wood">+ Zoom</button>
+            <button id="soundToggleBtn" class="btn-wood">🔊 Sound</button>
+          </div>
+        </div>
+
+        <aside class="side-column felt-panel">
+          <h3 class="parchment-title small">Match Status</h3>
+          <p id="matchStatus" class="subtitle">Press "Find Match" to enter the queue.</p>
+          <h3 class="parchment-title small">Chat</h3>
+          <div id="chatLog" class="chat-log"></div>
+          <form id="chatForm" class="chat-form">
+            <input type="text" id="chatInput" maxlength="200" placeholder="Say something..." autocomplete="off" />
+            <button type="submit" class="btn-wood">Send</button>
+          </form>
+          <h3 class="parchment-title small">Move Log</h3>
+          <ol id="moveLog" class="move-log"></ol>
+        </aside>
+
+      </div>
+    </section>
+
+    <!-- ===== PUZZLES VIEW ===== -->
+    <section id="view-puzzles" class="view hidden">
+      <div class="play-layout">
+        <div class="board-column">
+          <div class="board-frame">
+            <div id="puzzleBoard" class="chessboard"></div>
+          </div>
+          <div class="board-controls">
+            <button id="newPuzzleBtn" class="btn-gold">🧩 New Puzzle</button>
+            <button id="hintBtn" class="btn-wood">Show Hint</button>
+            <button id="puzzleZoomOutBtn" class="btn-wood">− Zoom</button>
+            <button id="puzzleZoomInBtn" class="btn-wood">+ Zoom</button>
+          </div>
+        </div>
+        <aside class="side-column felt-panel">
+          <h3 class="parchment-title small" id="puzzleTitle">Puzzle</h3>
+          <p class="subtitle">Rating: <span id="puzzleRating">—</span></p>
+          <p class="subtitle">White to move. Find the winning move.</p>
+          <p id="puzzleFeedback" class="form-msg"></p>
+          <p id="puzzleHint" class="hint-text hidden"></p>
+          <p class="subtitle">Solved so far: <span id="puzzleSolvedCount" class="gold-text">0</span></p>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ===== PUZZLE RUSH VIEW ===== -->
+    <section id="view-rush" class="view hidden">
+      <div class="play-layout">
+        <div class="board-column">
+          <div class="board-frame">
+            <div id="rushBoard" class="chessboard"></div>
+          </div>
+          <div class="board-controls">
+            <button id="rushStartBtn" class="btn-gold">▶ Start Rush (3 min)</button>
+          </div>
+        </div>
+        <aside class="side-column felt-panel">
+          <h3 class="parchment-title small">Puzzle Rush</h3>
+          <p class="subtitle">Solve as many puzzles as you can before time runs out or you make 3 mistakes.</p>
+          <div class="stat-row">
+            <div class="stat-card">
+              <span class="stat-num" id="rushTimer">3:00</span>
+              <span class="stat-label">Time Left</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-num" id="rushScore">0</span>
+              <span class="stat-label">Solved</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-num" id="rushMistakes">0 / 3</span>
+              <span class="stat-label">Mistakes</span>
+            </div>
+          </div>
+          <p id="rushFeedback" class="form-msg"></p>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ===== COACH VIEW ===== -->
+    <section id="view-coach" class="view hidden">
+      <div class="felt-panel">
+        <h2 class="parchment-title">Your Coach</h2>
+        <p class="subtitle">Step through a quick lesson, one idea at a time.</p>
+
+        <div class="coach-lesson">
+          <div class="coach-avatar">♟</div>
+          <div class="coach-bubble">
+            <div class="coach-bubble-label" id="coachStepLabel">Opening — Tip 1</div>
+            <div class="coach-bubble-text" id="coachStepText">Control the center with a pawn (e4/d4/e5/d5) in your first few moves.</div>
+          </div>
+        </div>
+        <div class="coach-lesson-controls">
+          <button id="coachPrevBtn" class="btn-wood">← Previous</button>
+          <span id="coachProgress" class="coach-progress">1 / 16</span>
+          <button id="coachNextBtn" class="btn-gold">Next →</button>
+        </div>
+
+        <div class="coach-grid">
+          <div class="coach-card">
+            <h3>Opening</h3>
+            <ul>
+              <li>Control the center with a pawn (e4/d4/e5/d5) in your first few moves.</li>
+              <li>Develop knights before bishops — they have fewer good squares.</li>
+              <li>Castle early, usually within your first 6–8 moves.</li>
+              <li>Don't move the same piece twice before finishing development.</li>
+            </ul>
+          </div>
+          <div class="coach-card">
+            <h3>Tactics</h3>
+            <ul>
+              <li>Before every move, check: does this hang a piece?</li>
+              <li>Look for forks, pins, and skewers on your opponent's last move.</li>
+              <li>A piece that attacks two things at once is usually winning material.</li>
+              <li>Practice daily in the Puzzles tab — pattern recognition compounds fast.</li>
+            </ul>
+          </div>
+          <div class="coach-card">
+            <h3>Endgame</h3>
+            <ul>
+              <li>King activity matters most once queens are off the board.</li>
+              <li>Push passed pawns — they only get more dangerous with fewer pieces on the board.</li>
+              <li>In king + pawn endings, opposition (facing kings with one square between) is key.</li>
+              <li>Rooks belong behind passed pawns — yours or your opponent's.</li>
+            </ul>
+          </div>
+          <div class="coach-card">
+            <h3>Mindset</h3>
+            <ul>
+              <li>Slow down in critical positions — most blunders happen on "quick" moves.</li>
+              <li>Review your losses. Losses teach more than wins.</li>
+              <li>A daily streak beats a single long session — consistency builds intuition.</li>
+              <li>It's fine to lose to the practice bot — that's what it's there for.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== LEADERBOARD VIEW ===== -->
+    <section id="view-leaderboard" class="view hidden">
+      <div class="felt-panel">
+        <h2 class="parchment-title">Hall of Champions</h2>
+        <table class="leaderboard-table">
+          <thead>
+            <tr><th>Rank</th><th>Player</th><th>Elo</th></tr>
+          </thead>
+          <tbody id="leaderboardBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="gameOverModal" class="modal hidden">
+    <div class="modal-card">
+      <h2 id="gameOverTitle" class="parchment-title">Game Over</h2>
+      <p id="gameOverReason" class="subtitle"></p>
+      <p id="gameOverElo" class="subtitle"></p>
+      <button id="closeModalBtn" class="btn-gold">Return to Hall</button>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.13.4/chess.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
